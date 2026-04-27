@@ -1,9 +1,4 @@
-__pycache__
-.DS_Store
+venv/
 .env
-
-*/.python-version
-# .vscode
-/.venv
-
-/seeder/*
+__pycache__/
+*.pyc
