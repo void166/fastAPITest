@@ -1,20 +1,22 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, UUID4
 
 class TodoBase(BaseModel):
+    owner_id: UUID4
     title: str
     description: str | None = None
     completed: bool = False
 
-class TodoCreate(TodoBase):
-    pass
+class TodoCreate(BaseModel):
+    title: str
+    description: str | None = None
+    completed: bool = False
 
 class TodoUpdate(BaseModel):
-    descrion: str | None = None
+    description: str | None = None
     completed: bool
 
 class TodoOut(TodoBase):
-    id: int
-    completed: bool
+    id: UUID4
 
     class Config:
         from_attributes = True

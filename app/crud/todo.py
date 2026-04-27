@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 from app.models.todo import Todo
 from app.schemas.todo import TodoCreate
 
@@ -9,20 +10,25 @@ def create(db:Session, todo:TodoCreate):
     db.refresh(obj)
     return obj
 
+
+def getTodos_by_user_id(db: Session,user_id):
+    return db.execute(select(Todo).where(Todo.owner_id == user_id)).scalars().all()
+
+
 def get_all(db: Session):
-    return db.query(Todo).all()
+    return db.execute(select(Todo)).scalars().all()
 
-def get(db: Session, todo_id: int):
-    return db.query(Todo).filter(Todo.id == todo_id).first()
+def get(db: Session, todo_id: str):
+    return db.execute(select(Todo).where(Todo.id == todo_id)).scalars().first()
 
-def delete(db: Session, todo_id: int):
+def delete(db: Session, todo_id: str):
     obj = get(db, todo_id)
     if obj:
         db.delete(obj)
         db.commit()
     return obj
 
-def update(db: Session, todo_id: int, completed:bool):
+def update(db: Session, todo_id: str, completed:bool):
     obj = get(db, todo_id)
     if obj:
         obj.completed = completed
