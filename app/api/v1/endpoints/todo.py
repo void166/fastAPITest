@@ -31,6 +31,11 @@ def read_one(todo_id: str, db: Session = Depends(get_db)):
 def update(todo_id: str, data: TodoUpdate, db: Session = Depends(get_db)):
     return todo_service.mark_completed(db, todo_id, data.completed)
 
+
+@router.put("/{todo_id}/details", response_model=TodoOut)
+def update_details(todo_id: str, data: TodoCreate, db: Session = Depends(get_db)):
+    return todo_service.update_todo(db, todo_id, data)
+
 @router.delete("/{todo_id}")
 def delete(todo_id: str, db: Session= Depends(get_db)):
     return crud.delete(db, todo_id)

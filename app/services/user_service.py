@@ -5,9 +5,9 @@ from app.schemas.User import UserCreate
 
 
 def create_user(db: Session, user: UserCreate):
-    db_user = crud.get_by_username(db, user.username)
+    db_user = crud.get_by_email(db, user.email)
     if db_user:
-        raise ValueError("Username already registered")
+        raise ValueError("email already registered")
     return crud.create(db, User(**user.dict()))
 
 def delete_user(db: Session, user_id):

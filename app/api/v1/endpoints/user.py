@@ -10,6 +10,16 @@ from app.crud import user as crud
 
 router= APIRouter()
 
+@router.put('/users/{user_id}', response_model=UserOut)
+def update_password(user_id: str, new_password: str, db: Session = Depends(get_db)):
+    user = crud.get(db, user_id)
+    if not user:
+        raise HTTPException(404, "user not found")
+    updated_user = crud.updatePassword(db, user_id, user.password, new_password)
+    if not updated_user:
+        raise HTTPException(400, "old password is incorrect")
+    return updated_user
+
 @router.post('/register', response_model=UserOut)
 def register(user: UserCreate, db: Session = Depends(get_db)):
     try:
