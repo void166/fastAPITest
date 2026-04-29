@@ -1,39 +1,54 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from app.models.todo import User
-from app.core.security import hash_password
+from app.core.security import hash_password, verify_password
 
 def create(db:Session, user: User):
 
     user.password = hash_password(user.password)
-
-
-    db.add(user)
-    db.commit()
-    db.refresh(user)
+    try:
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+    except Exception as e:
+        db.rollback()
+        raise e
+        
     return user
 
 def login(db: Session, email: str, password: str):
-    user = db.execute(select(User).where(User.email == email)).scalars().first()
-    if user and user.verify_password(password):
+    user = db.execute(
+        select(User).where(User.email == email)
+        ).scalars().first()
+
+    if user and verify_password(password, user.password):
         return user
+    
     return None
 
-def updatePassword(db: Session, user_id: str, old_password: str, new_password: str):
-    user = get(db, user_id)
-    if user and user.verify_password(old_password):
-        user.password = hash_password(new_password)
-        db.commit()
-        db.refresh(user)
-        return user
-    return None
+def update_password(db: Session, user_id: str, old_password: str, new_password: str):
+    try:
+        user = get(db, user_id)
+        if user and verify_password(old_password, user.password):
+            user.password = hash_password(new_password)
+            db.commit()
+            db.refresh(user)
+            return user
+        return None
+    except Exception as e:
+        db.rollback()
+        raise e
 
 def delete(db:Session, user_id: str):
-    obj = get(db, user_id)
-    if obj:
-        db.delete(obj)
-        db.commit()
-    return obj
+    try:
+        obj = get(db, user_id)
+        if obj:
+            db.delete(obj)
+            db.commit()
+        return obj
+    except Exception as e:
+        db.rollback()
+        raise e
 
 
 
