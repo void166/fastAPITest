@@ -6,6 +6,9 @@ from app.schemas.todo import TodoCreate, TodoUpdate
 class TodoService:
     """This class contains related todo actions"""
 
+    def delete_todo(self, db: Session, todo_id: str):
+        return crud.delete(db, todo_id)
+
     def create_todo(self, db: Session,user_id: str, todo: TodoCreate):
         return crud.create(db,user_id, todo)
     

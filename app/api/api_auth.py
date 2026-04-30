@@ -2,7 +2,7 @@ from app.db.deps import get_db
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from app.schemas.auth import UserLogin, UserRegister
+from app.schemas.auth import AuthLogin, AuthRegister
 from app.schemas.User import UserOut
 from app.services.auth_service import AuthService
 
@@ -10,7 +10,7 @@ from app.services.auth_service import AuthService
 router = APIRouter()
 
 @router.post('/register', response_model=UserOut)
-def register(user: UserRegister, db: Session = Depends(get_db)):
+def register(user: AuthRegister, db: Session = Depends(get_db)):
     try:
         return AuthService.create_user(db, user)
     except ValueError as e:

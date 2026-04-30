@@ -12,6 +12,12 @@ router = APIRouter()
 def create(user_id: str,todo: TodoCreate, db: Session = Depends(get_db)):
     return todo_service.create_todo(db,user_id, todo)
 
+@router.delete("/{todo_id}")
+def delete(todo_id: str, db: Session= Depends(get_db)):
+    todo = todo_service.delete_todo(db, todo_id)
+    if not todo:
+        raise HTTPException(404, "not found")
+    return {"message": "Todo deleted successfully"}
 
 @router.get('/user/{user_id}', response_model=list[TodoOut])
 def get_todos_by_user_id(user_id: str, db: Session = Depends(get_db)):

@@ -5,11 +5,6 @@ from app.core.security import create_access_token, hash_password, verify_passwor
 from sqlalchemy.orm import Session
 
 
-
-
-
-
-
 def create(db:Session, user: User):
 
     user.password = hash_password(user.password)

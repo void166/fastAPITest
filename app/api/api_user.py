@@ -10,7 +10,7 @@ from app.services.user_service import user_service
 router= APIRouter()
 
 
-@router.put('/users/{user_id}/password', response_model=UserOut)
+@router.patch('/{user_id}/password', response_model=UserOut)
 def update_password(user_id: str, payload: UserPasswordUpdate, db: Session = Depends(get_db)):
     user = user_service.get_user(db, user_id)
 
