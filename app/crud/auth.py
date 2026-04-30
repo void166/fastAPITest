@@ -42,7 +42,8 @@ def login(db: Session, email: str, password: str):
 
 
     return {
-        "user_id": user.id,
-        "email": user.email,
-        "token": token
+        "access_token": token,
+        "token_type": "bearer",
+        "user_id": str(user.id),
+        "email": user.email
     }
