@@ -24,20 +24,20 @@ def update_password(user_id: str, payload: UserPasswordUpdate, db: Session = Dep
     
     return updated_user
 
-@router.get('/users', response_model=list[UserList])
+@router.get('/', response_model=list[UserList])
 def get_users(db: Session = Depends(get_db)):
     return user_service.get_all_users(db)
 
 
 # todonuud tei ni gargay
-@router.get('/users/{user_id}', response_model=UserOut)
+@router.get('/{user_id}', response_model=UserOut)
 def get_user(user_id: str, db: Session = Depends(get_db)):
     user = user_service.get_user(db, user_id)
     if not user:
         raise HTTPException(404, "not found")
     return user
 
-@router.delete('/users/{user_id}')
+@router.delete('/{user_id}')
 def delete_user(user_id: str, db: Session = Depends(get_db)):
     user = user_service.get_user(db, user_id)
     if not user:
