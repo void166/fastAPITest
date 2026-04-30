@@ -3,28 +3,6 @@ from sqlalchemy import select
 from app.models.todo import User
 from app.core.security import hash_password, verify_password
 
-def create(db:Session, user: User):
-
-    user.password = hash_password(user.password)
-    try:
-        db.add(user)
-        db.commit()
-        db.refresh(user)
-    except Exception as e:
-        db.rollback()
-        raise e
-        
-    return user
-
-def login(db: Session, email: str, password: str):
-    user = db.execute(
-        select(User).where(User.email == email)
-        ).scalars().first()
-
-    if user and verify_password(password, user.password):
-        return user
-    
-    return None
 
 def update_password(db: Session, user_id: str, old_password: str, new_password: str):
     try:

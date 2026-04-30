@@ -13,10 +13,6 @@ class UserList(BaseModel):
     address: str | None = None
 
 
-class UserCreate(UserList):
-    password: str
-
-
 class UserPasswordUpdate(BaseModel):
     old_password: str
     new_password: str

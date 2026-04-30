@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 
 
 
-from app.api.deps import get_db
-from app.schemas.User import UserCreate, UserOut, UserPasswordUpdate
+from app.db.deps import get_db
+from app.schemas.User import  UserList, UserOut, UserPasswordUpdate
 from app.services.user_service import user_service
 
 router= APIRouter()
@@ -24,14 +24,7 @@ def update_password(user_id: str, payload: UserPasswordUpdate, db: Session = Dep
     
     return updated_user
 
-@router.post('/register', response_model=UserOut)
-def register(user: UserCreate, db: Session = Depends(get_db)):
-    try:
-        return user_service.create_user(db, user)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
-@router.get('/users', response_model=list[UserOut])
+@router.get('/users', response_model=list[UserList])
 def get_users(db: Session = Depends(get_db)):
     return user_service.get_all_users(db)
 

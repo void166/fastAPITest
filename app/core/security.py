@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from jose import jwt
 from passlib.context import CryptContext
 from app.core.config import settings
@@ -12,12 +12,18 @@ def hash_password(password: str) -> str:
 def verify_password(plain_password: str, hashed_password: str)-> bool:
     return pwt_context.verify(plain_password, hashed_password);
 
+def create_access_token(email: str, user_id: str):
+    expire = datetime.now(timezone.utc) + timedelta(minutes=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES)
 
-def generate_token(email: str, user_id: str, algorithm: str, expire_minutes: int):
+    to_encode = {
+        "sub": email,
+        "user_id": str(user_id),
+        "exp": expire
+    }
 
-    secret_key = settings.JWT_SECRET_KEY
+    return jwt.encode(
+        to_encode,
+        settings.JWT_SECRET_KEY,
+        algorithm=settings.JWT_ALGORITHM
+    )
 
-    expire = datetime.utcnow() + timedelta(minutes=expire_minutes)
-    to_encode = {"sub": email, "user_id": user_id, "exp": expire}
-    token = jwt.encode(to_encode, secret_key, algorithm=algorithm)
-    return token
