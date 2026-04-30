@@ -27,3 +27,13 @@ def create_access_token(email: str, user_id: str):
         algorithm=settings.JWT_ALGORITHM
     )
 
+def verify_access_token(token: str):
+
+    try:
+        payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
+        return payload
+    except jwt.JWTError:
+        return None
+    
+
+

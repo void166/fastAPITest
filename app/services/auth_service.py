@@ -17,8 +17,10 @@ class AuthService:
         user_data = user.model_dump()
      
         return auth_crud.create(db, User(**user_data))
-
-    def login(self, db: Session, email: str, password: str):
+    
+    
+    @staticmethod
+    def login(db: Session, email: str, password: str):
         return login(db, email, password)
     
 

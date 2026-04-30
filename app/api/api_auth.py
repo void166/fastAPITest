@@ -1,4 +1,4 @@
-from app.db.deps import get_db
+from app.core.deps import get_db
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.schemas.auth import UserLogin, UserRegister
@@ -16,8 +16,8 @@ def register(user: UserRegister, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail=str(e))
     
 @router.post('/login')
-def login(payload: UserLogin, db: Session = Depends(get_db)):
-    result = AuthService.login(db, payload.email, payload.password)
+def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    result = AuthService.login(db, form_data.email, form_data.password)
     if not result:
         raise HTTPException(400, "invalid email or password")
     
